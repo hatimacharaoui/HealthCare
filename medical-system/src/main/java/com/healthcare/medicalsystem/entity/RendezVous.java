@@ -13,7 +13,7 @@ public class RendezVous {
     private Long id;
 
     private LocalDateTime dateRendezVous;
-    private String statut; // CONFIRME, ANNULE, TERMINE
+    private String statut;
 
     @ManyToOne
     @JoinColumn(name = "patient_id")

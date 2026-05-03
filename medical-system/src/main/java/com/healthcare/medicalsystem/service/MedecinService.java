@@ -2,6 +2,7 @@ package com.healthcare.medicalsystem.service;
 
 import com.healthcare.medicalsystem.dto.MedecinDTO;
 import com.healthcare.medicalsystem.entity.Medecin;
+import com.healthcare.medicalsystem.entity.Patient;
 import com.healthcare.medicalsystem.mapper.MedecinMapper;
 import com.healthcare.medicalsystem.repository.MedecinRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +36,11 @@ public class MedecinService {
 
     public List<MedecinDTO> findAll() {
         return medecinMapper.toDTOList(medecinRepository.findAll());
+    }
+
+    public MedecinDTO findById(Long id) {
+        Medecin medecin = medecinRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Medecin introuvable"));
+        return medecinMapper.toDTO(medecin);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.chrono.AbstractChronology;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,64 +22,62 @@ public class MedecinServiceTest {
 
     private static Long medecinId;
 
-    // ─────────────────────────────────────────────
-    // 1. Créer un médecin
-    // ─────────────────────────────────────────────
+
     @Test
     @Order(1)
     void testCreerMedecin() {
         MedecinDTO dto = new MedecinDTO();
-        dto.setNom("Alaoui");
-        dto.setSpecialite("Cardiologie");
-        dto.setEmail("alaoui@hopital.ma");
-        dto.setTelephone("0522001122");
+        dto.setNom("Acharaoui");
+        dto.setSpecialite("Generaliste");
+        dto.setEmail("Acharaoui@gmail.com");
+        dto.setTelephone("0544444");
 
-        MedecinDTO saved = medecinService.create(dto);
+        MedecinDTO resultat = medecinService.create(dto);
 
-        assertNotNull(saved.getId(), "L'ID doit être généré");
-        assertEquals("Alaoui", saved.getNom());
-        assertEquals("Cardiologie", saved.getSpecialite());
+        assertNotNull(resultat.getId());
+        assertEquals("Acharaoui", resultat.getNom());
+        assertEquals("Generaliste", resultat.getSpecialite());
+        assertEquals("Acharaoui@gmail.com", resultat.getEmail());
 
-        medecinId = saved.getId();
+        medecinId = resultat.getId();
     }
 
-    // ─────────────────────────────────────────────
-    // 2. Lister tous les médecins
-    // ─────────────────────────────────────────────
+
+
     @Test
     @Order(2)
     void testFindAllMedecins() {
-        List<MedecinDTO> liste = medecinService.findAll();
+        List<MedecinDTO> medecinListe = medecinService.findAll();
 
-        assertNotNull(liste);
-        assertFalse(liste.isEmpty(), "La liste doit contenir au moins un médecin");
+        assertNotNull(medecinListe);
+        assertFalse(medecinListe.isEmpty());
     }
 
-    // ─────────────────────────────────────────────
-    // 3. Modifier un médecin
-    // ─────────────────────────────────────────────
+
+
     @Test
     @Order(3)
     void testModifierMedecin() {
         MedecinDTO dto = new MedecinDTO();
-        dto.setNom("Alaoui");
-        dto.setSpecialite("Neurologie");       // nouvelle spécialité
-        dto.setEmail("alaoui.neuro@hopital.ma");
-        dto.setTelephone("0522001122");
+        dto.setNom("Acharaoui.h");
+        dto.setSpecialite("Cardiologie");
+        dto.setEmail("Acharaoui.hatim@gmail.com");
+        dto.setTelephone("0522222");
 
-        MedecinDTO updated = medecinService.update(medecinId, dto);
+        MedecinDTO resultatModifier = medecinService.update(medecinId, dto);
 
-        assertEquals("Neurologie", updated.getSpecialite());
-        assertEquals("alaoui.neuro@hopital.ma", updated.getEmail());
+        assertEquals("Acharaoui.h", resultatModifier.getNom());
+        assertEquals("Cardiologie", resultatModifier.getSpecialite());
+        assertEquals("Acharaoui.hatim@gmail.com", resultatModifier.getEmail());
     }
 
-    // ─────────────────────────────────────────────
-    // 4. Supprimer un médecin
-    // ─────────────────────────────────────────────
+
     @Test
     @Order(4)
     void testSupprimerMedecin() {
-        assertDoesNotThrow(() -> medecinService.delete(medecinId),
-                "La suppression ne doit pas lever d'exception");
+        medecinService.delete(medecinId);
+
+        assertThrows(RuntimeException.class,
+                () -> medecinService.findById(medecinId));
     }
 }

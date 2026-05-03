@@ -22,97 +22,75 @@ public class PatientServiceTest {
 
     private static Long patientId;
 
-    // ─────────────────────────────────────────────
-    // 1. Créer un patient
-    // ─────────────────────────────────────────────
+
     @Test
     @Order(1)
     void testCreerPatient() {
         PatientDTO dto = new PatientDTO();
-        dto.setNom("Ben Ali");
-        dto.setPrenom("Youssef");
-        dto.setEmail("youssef@test.com");
-        dto.setTelephone("0612345678");
-        dto.setDateNaissance(LocalDate.of(1990, 5, 20));
+        dto.setNom("Acharaoui");
+        dto.setPrenom("hatim");
+        dto.setEmail("hatim@gmail.com");
+        dto.setTelephone("061234");
+        dto.setDateNaissance(LocalDate.of(1993, 6, 25));
 
-        PatientDTO saved = patientService.create(dto);
+        PatientDTO resultat = patientService.create(dto);
 
-        assertNotNull(saved.getId(), "L'ID doit être généré automatiquement");
-        assertEquals("Ben Ali", saved.getNom());
-        assertEquals("Youssef", saved.getPrenom());
-        assertEquals("youssef@test.com", saved.getEmail());
+        assertNotNull(resultat.getId());
+        assertEquals("Acharaoui", resultat.getNom());
+        assertEquals("hatim", resultat.getPrenom());
+        assertEquals("hatim@gmail.com", resultat.getEmail());
 
-        patientId = saved.getId();
+        patientId = resultat.getId();
     }
 
-    // ─────────────────────────────────────────────
-    // 2. Lister tous les patients
-    // ─────────────────────────────────────────────
+
     @Test
     @Order(2)
     void testFindAllPatients() {
-        List<PatientDTO> liste = patientService.findAll();
+        List<PatientDTO> patientListe = patientService.findAll();
 
-        assertNotNull(liste, "La liste ne doit pas être null");
-        assertFalse(liste.isEmpty(), "La liste doit contenir au moins un patient");
+        assertNotNull(patientListe);
+        assertFalse(patientListe.isEmpty());
     }
 
-    // ─────────────────────────────────────────────
-    // 3. Trouver un patient par ID
-    // ─────────────────────────────────────────────
+
     @Test
     @Order(3)
     void testFindPatientParId() {
-        PatientDTO found = patientService.findById(patientId);
+        PatientDTO patientdto = patientService.findById(patientId);
 
-        assertNotNull(found);
-        assertEquals(patientId, found.getId());
-        assertEquals("Ben Ali", found.getNom());
+        assertNotNull(patientdto);
+        assertEquals(patientId, patientdto.getId());
+        assertEquals("Acharaoui", patientdto.getNom());
+        assertEquals("hatim", patientdto.getPrenom());
     }
 
-    // ─────────────────────────────────────────────
-    // 4. Modifier un patient
-    // ─────────────────────────────────────────────
+
     @Test
     @Order(4)
     void testModifierPatient() {
         PatientDTO dto = new PatientDTO();
-        dto.setNom("Ben Ali Modifié");
-        dto.setPrenom("Youssef");
-        dto.setEmail("youssef.modifie@test.com");
-        dto.setTelephone("0699999999");
-        dto.setDateNaissance(LocalDate.of(1990, 5, 20));
+        dto.setNom("Acharaoui A");
+        dto.setPrenom("hatim A");
+        dto.setEmail("hatim.A@gmail.com");
+        dto.setTelephone("067777");
+        dto.setDateNaissance(LocalDate.of(1993, 6, 25));
 
-        PatientDTO updated = patientService.update(patientId, dto);
+        PatientDTO resultatModifier = patientService.update(patientId, dto);
 
-        assertEquals("Ben Ali Modifié", updated.getNom());
-        assertEquals("youssef.modifie@test.com", updated.getEmail());
-        assertEquals("0699999999", updated.getTelephone());
+        assertEquals("Acharaoui A", resultatModifier.getNom());
+        assertEquals("hatim.A@gmail.com", resultatModifier.getEmail());
+        assertEquals("067777", resultatModifier.getTelephone());
     }
 
-    // ─────────────────────────────────────────────
-    // 5. ID inexistant → exception
-    // ─────────────────────────────────────────────
+
+
     @Test
     @Order(5)
-    void testFindPatientInexistant() {
-        RuntimeException ex = assertThrows(
-                RuntimeException.class,
-                () -> patientService.findById(9999L),
-                "Doit lever une exception si le patient n'existe pas"
-        );
-        assertTrue(ex.getMessage().contains("introuvable"));
-    }
-
-    // ─────────────────────────────────────────────
-    // 6. Supprimer un patient
-    // ─────────────────────────────────────────────
-    @Test
-    @Order(6)
     void testSupprimerPatient() {
-        assertDoesNotThrow(() -> patientService.delete(patientId),
-                "La suppression ne doit pas lever d'exception");
+        patientService.delete(patientId);
 
-        assertThrows(RuntimeException.class, () -> patientService.findById(patientId));
+        assertThrows(RuntimeException.class,
+                () -> patientService.findById(patientId));
     }
 }

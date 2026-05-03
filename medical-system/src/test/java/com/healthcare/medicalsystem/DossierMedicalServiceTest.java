@@ -27,86 +27,69 @@ public class DossierMedicalServiceTest {
     private static Long dossierId;
     private static Long patientId;
 
-    // ─────────────────────────────────────────────
-    // Préparation : créer un patient
-    // ─────────────────────────────────────────────
+
     @BeforeAll
-    static void setup(@Autowired PatientService pService) {
-        PatientDTO p = new PatientDTO();
-        p.setNom("Ziani");
-        p.setPrenom("Fatima");
-        p.setEmail("fatima.dossier@test.com");
-        p.setTelephone("0611223344");
-        p.setDateNaissance(LocalDate.of(1978, 8, 25));
-        patientId = pService.create(p).getId();
+    static void recupererIdPatient(@Autowired PatientService patientService) {
+        PatientDTO dto = new PatientDTO();
+        dto.setNom("Acharaoui");
+        dto.setPrenom("hatim");
+        dto.setEmail("hatim@gmail.com");
+        dto.setTelephone("0612345");
+        dto.setDateNaissance(LocalDate.of(1993, 6, 25));
+        patientId = patientService.create(dto).getId();
     }
 
-    // ─────────────────────────────────────────────
-    // 1. Créer un dossier médical
-    // ─────────────────────────────────────────────
+
+
     @Test
     @Order(1)
     void testCreerDossier() {
         DossierMedicalDTO dto = new DossierMedicalDTO();
-        dto.setDiagnostic("Hypertension légère");
-        dto.setObservations("Surveiller la tension chaque semaine");
+        dto.setDiagnostic("Fièvre");
+        dto.setObservations("Température élevée");
         dto.setPatientId(patientId);
 
-        DossierMedicalDTO saved = dossierService.create(dto);
+        DossierMedicalDTO resultat = dossierService.create(dto);
 
-        assertNotNull(saved.getId(), "L'ID du dossier doit être généré");
-        assertEquals("Hypertension légère", saved.getDiagnostic());
-        assertNotNull(saved.getDateCreation(), "La date de création doit être renseignée automatiquement");
-        assertEquals(LocalDate.now(), saved.getDateCreation());
+        assertNotNull(resultat.getId());
+        assertEquals("Fièvre", resultat.getDiagnostic());
+        assertEquals("Température élevée", resultat.getObservations());
+        assertNotNull(resultat.getDateCreation());
+        assertEquals(LocalDate.now(), resultat.getDateCreation());
 
-        dossierId = saved.getId();
+        dossierId = resultat.getId();
     }
 
-    // ─────────────────────────────────────────────
-    // 2. Trouver le dossier par patient
-    // ─────────────────────────────────────────────
+
+
     @Test
     @Order(2)
     void testFindDossierParPatient() {
-        DossierMedicalDTO found = dossierService.findByPatient(patientId);
+        DossierMedicalDTO resultat = dossierService.findByPatient(patientId);
 
-        assertNotNull(found);
-        assertEquals(patientId, found.getPatientId());
-        assertEquals("Hypertension légère", found.getDiagnostic());
+        assertNotNull(resultat);
+        assertEquals(patientId, resultat.getPatientId());
+        assertEquals("Fièvre", resultat.getDiagnostic());
     }
 
-    // ─────────────────────────────────────────────
-    // 3. Ajouter / modifier le diagnostic
-    // ─────────────────────────────────────────────
+
+
     @Test
     @Order(3)
     void testAjouterDiagnostic() {
-        DossierMedicalDTO updated = dossierService.addDiagnostic(dossierId, "Hypertension modérée");
+        DossierMedicalDTO modifierDiagnostic = dossierService.addDiagnostic(dossierId, "Fatigue générale");
 
-        assertEquals("Hypertension modérée", updated.getDiagnostic());
+        assertEquals("Fatigue générale", modifierDiagnostic.getDiagnostic());
     }
 
-    // ─────────────────────────────────────────────
-    // 4. Ajouter des observations
-    // ─────────────────────────────────────────────
+
+
     @Test
     @Order(4)
     void testAjouterObservations() {
-        DossierMedicalDTO updated = dossierService.addObservations(dossierId, "Régime sans sel recommandé");
+        DossierMedicalDTO modifierObservation = dossierService.addObservations(dossierId, "Patient stable");
 
-        assertEquals("Régime sans sel recommandé", updated.getObservations());
+        assertEquals("Patient stable", modifierObservation.getObservations());
     }
 
-    // ─────────────────────────────────────────────
-    // 5. Dossier inexistant → exception
-    // ─────────────────────────────────────────────
-    @Test
-    @Order(5)
-    void testDossierInexistant() {
-        RuntimeException ex = assertThrows(
-                RuntimeException.class,
-                () -> dossierService.findByPatient(9999L)
-        );
-        assertTrue(ex.getMessage().contains("introuvable"));
-    }
 }

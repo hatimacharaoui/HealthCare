@@ -8,14 +8,14 @@ import java.util.List;
 
 public interface RendezVousRepository extends JpaRepository<RendezVous, Long> {
 
-    // Derived Query
+
     List<RendezVous> findByPatientId(Long patientId);
 
-    // @Query JPQL
+
     @Query("SELECT r FROM RendezVous r WHERE r.medecin.id = :medecinId")
     List<RendezVous> findByMedecinIdJPQL(@Param("medecinId") Long medecinId);
 
-    // @Query SQL natif avec jointure
+
     @Query(value = "SELECT r.* FROM rendez_vous r " +
             "INNER JOIN patient p ON r.patient_id = p.id " +
             "WHERE p.nom = :nom", nativeQuery = true)

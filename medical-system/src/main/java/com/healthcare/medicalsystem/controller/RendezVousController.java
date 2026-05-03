@@ -21,11 +21,13 @@ public class RendezVousController {
         return ResponseEntity.ok(rendezVousService.create(dto));
     }
 
+
     @PutMapping("/{id}")
     @Operation(summary = "Modifier un RendezVous")
     public ResponseEntity<RendezVousDTO> update(@PathVariable Long id, @RequestBody RendezVousDTO dto) {
         return ResponseEntity.ok(rendezVousService.update(id, dto));
     }
+
 
     @PutMapping("/{id}/annuler")
     @Operation(summary = "annuler un RendezVous")
@@ -34,11 +36,13 @@ public class RendezVousController {
         return ResponseEntity.ok().build();
     }
 
+
     @GetMapping
     @Operation(summary = "Lister les RendezVous")
     public ResponseEntity<List<RendezVousDTO>> findAll() {
         return ResponseEntity.ok(rendezVousService.findAll());
     }
+
 
     @GetMapping("/patient/{patientId}")
     @Operation(summary = "Trouver par Patient")
@@ -46,9 +50,12 @@ public class RendezVousController {
         return ResponseEntity.ok(rendezVousService.findByPatient(patientId));
     }
 
+
     @GetMapping("/medecin/{medecinId}")
     @Operation(summary = "Trouver par Medecin")
     public ResponseEntity<List<RendezVousDTO>> findByMedecin(@PathVariable Long medecinId) {
         return ResponseEntity.ok(rendezVousService.findByMedecin(medecinId));
     }
+
+
 }

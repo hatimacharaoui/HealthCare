@@ -40,8 +40,8 @@ public class PatientService {
     }
 
     public PatientDTO findById(Long id) {
-        return patientRepository.findById(id)
-                .map(patientMapper::toDTO)
+         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Patient introuvable"));
+        return patientMapper.toDTO(patient);
     }
 }
